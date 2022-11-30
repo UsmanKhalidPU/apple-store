@@ -1,0 +1,16 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="MavenPackageUpdate" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="excludeList">
+        <list>
+          <option value="org.glassfish.jersey.containers:jersey-container-servlet" />
+          <option value="org.glassfish.jersey.inject:jersey-hk2" />
+          <option value="org.glassfish.jersey.ext:jersey-entity-filtering" />
+          <option value="org.glassfish.jersey.core:jersey-server" />
+          <option value="com.google.code.gson:gson" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
