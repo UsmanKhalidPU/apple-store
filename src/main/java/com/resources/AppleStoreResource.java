@@ -71,4 +71,12 @@ public class AppleStoreResource {
         return Response.ok(updatedStr).build();
     }
 
+    @DELETE
+    @Path("/{inventory_id}")
+    public Response deleteItem(@PathParam("inventory_id")Integer id)
+    {
+        String Str = appleStoreService.deleteItem(id);
+        return Response.ok(Str).build();
+    }
+
 }

@@ -419,4 +419,49 @@ public class AppleStoreService {
         return"Please check your logic";
     }
 
+    public String deleteItem(int id)
+    {
+        Connection con = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
+            Statement stmt = con.createStatement();
+
+            String SQL= new String();
+            SQL= "select * from inventory where inventory.id='" + id + "'";
+            ResultSet rs;
+            rs = stmt.executeQuery(SQL);
+
+            if(rs.next())
+            {
+                String sqlUpdate = "delete from inventory where inventory.id='" + id + "'";
+                System.out.println(sqlUpdate);
+                int records = stmt.executeUpdate(sqlUpdate);
+                System.out.println("No. of records deleted: "  + records);
+
+                return "{\"message\" : \"OK\"}";
+            }
+            else{
+                System.out.println("invalid key");
+            }
+
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
+
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                }
+                catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
+        }
+        return"Please check your logic";
+    }
+
 }
