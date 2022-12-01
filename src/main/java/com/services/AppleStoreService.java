@@ -86,10 +86,9 @@ public class AppleStoreService {
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
 
-            List<Inventory> inventoryItems = new ArrayList<Inventory>();
+            Inventory inventoryItem = new Inventory();
 
             if(rs.next()){
-                Inventory inventoryItem = new Inventory();
                 ItemCategory itemCategory = new ItemCategory();
                 ItemLocation itemLocation = new ItemLocation();
 
@@ -99,18 +98,15 @@ public class AppleStoreService {
 
                 itemCategory.setId(rs.getInt("item_category.id"));
                 itemCategory.setCategoryName(rs.getString("item_category.category_name"));
+                inventoryItem.setItemCategory(itemCategory);
 
                 itemLocation.setId(rs.getInt("item_location.id"));
                 itemLocation.setLocationName(rs.getString("item_location.location_name"));
-
-                inventoryItem.setItemCategory(itemCategory);
                 inventoryItem.setItemLocation(itemLocation);
-
-                inventoryItems.add(inventoryItem);
             }
 
             Gson gson = new Gson();
-            String json = gson.toJson(inventoryItems);
+            String json = gson.toJson(inventoryItem);
             System.out.println(json);
             return json;
 
@@ -373,4 +369,54 @@ public class AppleStoreService {
             }
         }
     }
+
+    public String updateItem(Inventory inventory, int id)
+    {
+        Connection con = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
+            Statement stmt = con.createStatement();
+
+            String SQL= new String();
+            SQL= "select * from inventory where inventory.id='" + id + "'";
+            ResultSet rs;
+            rs = stmt.executeQuery(SQL);
+
+            if(rs.next())
+            {
+                String sqlUpdate = "update inventory set item_name = '" + inventory.getItemName() + "', " + "item_quantity = '" + inventory.getItemQuantity()+ "' where inventory.id = '" + id + "'";
+                System.out.println(sqlUpdate);
+                int records = stmt.executeUpdate(sqlUpdate);
+                System.out.println("No. of records updated: "  + records);
+
+                inventory.setId(id);
+                Gson gson = new Gson();
+                String json = gson.toJson(inventory);
+                System.out.println(json);
+                return json;
+            }
+            else{
+                System.out.println("invalid key");
+            }
+
+        }
+        catch (Exception e) {
+            System.out.println(e);
+        }
+
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                }
+                catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
+        }
+        return"Please check your logic";
+    }
+
 }

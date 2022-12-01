@@ -61,4 +61,14 @@ public class AppleStoreResource {
         return Response.ok(str).build();
     }
 
+    @PUT
+    @Path("/{inventory_id}")
+    public Response updateItem(@PathParam("inventory_id")Integer id, String str)
+    {
+        Gson gson = new Gson();
+        Inventory inventory = gson.fromJson(str, Inventory.class);
+        String updatedStr = appleStoreService.updateItem(inventory, id);
+        return Response.ok(updatedStr).build();
+    }
+
 }
