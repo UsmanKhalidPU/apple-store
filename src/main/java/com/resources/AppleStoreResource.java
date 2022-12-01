@@ -51,4 +51,14 @@ public class AppleStoreResource {
         return Response.ok(str).build();
     }
 
+    @POST
+    @Path("/add")
+    public Response addItem(String str)
+    {
+        Gson gson = new Gson();
+        Inventory inventory = gson.fromJson(str, Inventory.class);
+        appleStoreService.addItem(inventory);
+        return Response.ok(str).build();
+    }
+
 }

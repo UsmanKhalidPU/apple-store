@@ -337,6 +337,40 @@ public class AppleStoreService {
         }
         return "Please check your configurations";
     }
+    public void addItem(Inventory inventory)
+    {
+        Connection con = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
 
+            String SQL = "insert into inventory (item_name, item_quantity, item_category_id, item_location_id) values (?,?,?,?); ";
 
+            PreparedStatement pstmt = con.prepareStatement(SQL);
+
+            pstmt.setString(1,inventory.getItemName());
+            pstmt.setInt(2,inventory.getItemQuantity());
+            pstmt.setInt(3,inventory.getItemCategory().getId());
+            pstmt.setInt(4,inventory.getItemLocation().getId());
+
+            int record = pstmt.executeUpdate();
+            System.out.println("No. of record Inserted: "+ record);
+
+            }
+        catch (Exception e) {
+            System.out.println(e);
+        }
+
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                }
+                catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
+        }
+    }
 }
