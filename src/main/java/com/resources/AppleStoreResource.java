@@ -1,11 +1,10 @@
 package com.resources;
 
+import com.domain.Inventory;
+import com.google.gson.Gson;
 import com.services.AppleStoreService;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.QueryParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
 @Path("/inventory")
@@ -17,22 +16,39 @@ public class AppleStoreResource {
     @Path("/list")
     public Response listAll()
     {
-        String str = appleStoreService.fetchAll();
+        String str = appleStoreService.listAll();
         return Response.ok(str).build();
     }
 
     @GET
     @Path("/{inventory_id}")
-    public Response listAll(@PathParam("inventory_id")Integer id)
+    public Response listById(@PathParam("inventory_id")Integer id)
     {
-        String str = appleStoreService.fetchById(id);
+        String str = appleStoreService.listById(id);
         return Response.ok(str).build();
     }
     @GET
     @Path("/listByCategory")
-    public Response fetchByCategory(@QueryParam("category") Integer catId)
+    public Response listByCategory(@QueryParam("category") Integer categoryId)
     {
-        String str = appleStoreService.fetchByCategory(catId);
+        String str = appleStoreService.listByCategory(categoryId);
         return Response.ok(str).build();
     }
+
+    @GET
+    @Path("/listByLocation")
+    public Response listByLocation(@QueryParam("location") Integer locationId)
+    {
+        String str = appleStoreService.listByLocation(locationId);
+        return Response.ok(str).build();
+    }
+
+    @GET
+    @Path("/listByCatLoc")
+    public Response listByCatLoc(@QueryParam ("category") Integer categoryId, @QueryParam("location") Integer locationId)
+    {
+        String str = appleStoreService.listByCatLoc(categoryId, locationId);
+        return Response.ok(str).build();
+    }
+
 }

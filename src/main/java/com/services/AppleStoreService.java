@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppleStoreService {
-    public String fetchAll()
+    public String listAll()
     {
         Connection con = null;
         Statement stmt;
@@ -19,8 +19,6 @@ public class AppleStoreService {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
             stmt = con.createStatement();
-
-//            String SQL = "select * from applestore.inventory as AI, applestore.item_category as AC, applestore.item_location as AL where AI.item_category_id = AC.id AND AI.item_location_id = AL.id";
 
             String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
@@ -71,10 +69,10 @@ public class AppleStoreService {
                 }
             }
         }
-        return "No inventory left";
+        return "Please check your configurations";
     }
 
-    public String fetchById(Integer id)
+    public String listById(Integer inventoryId)
     {
         Connection con = null;
         Statement stmt;
@@ -84,9 +82,7 @@ public class AppleStoreService {
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
             stmt = con.createStatement();
 
-//            String SQL = "select * from applestore.inventory as AI, applestore.item_category as AC, applestore.item_location as AL where AI.item_category_id = AC.id AND AI.item_location_id = AL.id";
-
-            String SQL = "select * from inventory, item_category, item_location where inventory.id = " + id + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
+            String SQL = "select * from inventory, item_category, item_location where inventory.id = " + inventoryId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
 
@@ -135,52 +131,56 @@ public class AppleStoreService {
                 }
             }
         }
-        return "No inventory left";
+        return "Please check your configurations";
     }
 
-    public String fetchByCategory(Integer id)
+    public String listByCategory(Integer categoryId)
     {
         Connection con = null;
-        Statement stmt;
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
-            stmt = con.createStatement();
+            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 
-//            String SQL = "select * from applestore.inventory as AI, applestore.item_category as AC, applestore.item_location as AL where AI.item_category_id = AC.id AND AI.item_location_id = AL.id";
-
-            String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = " + id + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
+            String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = " + categoryId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
 
             List<Inventory> inventoryItems = new ArrayList<Inventory>();
+            if(rs.next()) {
+                rs.beforeFirst();
+                while (rs.next()) {
+                    Inventory inventoryItem = new Inventory();
+                    ItemCategory itemCategory = new ItemCategory();
+                    ItemLocation itemLocation = new ItemLocation();
 
-            while(rs.next()){
-                Inventory inventoryItem = new Inventory();
-                ItemCategory itemCategory = new ItemCategory();
-                ItemLocation itemLocation = new ItemLocation();
+                    inventoryItem.setId(rs.getInt("inventory.id"));
+                    inventoryItem.setItemName(rs.getString("inventory.item_name"));
+                    inventoryItem.setItemQuantity(rs.getInt("inventory.item_quantity"));
 
-                inventoryItem.setId(rs.getInt("inventory.id"));
-                inventoryItem.setItemName(rs.getString("inventory.item_name"));
-                inventoryItem.setItemQuantity(rs.getInt("inventory.item_quantity"));
+                    itemCategory.setId(rs.getInt("item_category.id"));
+                    itemCategory.setCategoryName(rs.getString("item_category.category_name"));
 
-                itemCategory.setId(rs.getInt("item_category.id"));
-                itemCategory.setCategoryName(rs.getString("item_category.category_name"));
+                    itemLocation.setId(rs.getInt("item_location.id"));
+                    itemLocation.setLocationName(rs.getString("item_location.location_name"));
 
-                itemLocation.setId(rs.getInt("item_location.id"));
-                itemLocation.setLocationName(rs.getString("item_location.location_name"));
+                    inventoryItem.setItemCategory(itemCategory);
+                    inventoryItem.setItemLocation(itemLocation);
 
-                inventoryItem.setItemCategory(itemCategory);
-                inventoryItem.setItemLocation(itemLocation);
+                    inventoryItems.add(inventoryItem);
+                }
 
-                inventoryItems.add(inventoryItem);
+                Gson gson = new Gson();
+                String json = gson.toJson(inventoryItems);
+                System.out.println(json);
+                return json;
             }
 
-            Gson gson = new Gson();
-            String json = gson.toJson(inventoryItems);
-            System.out.println(json);
-            return json;
+            else
+            {
+                return "No inventory left";
+            }
 
         }
 
@@ -199,6 +199,144 @@ public class AppleStoreService {
                 }
             }
         }
-        return "No inventory left";
+        return "Please check your configurations";
     }
+
+    public String listByLocation(Integer locationId)
+    {
+        Connection con = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
+            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+            String SQL = "select * from inventory, item_category, item_location where inventory.item_location_id = " + locationId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
+            System.out.println(SQL);
+            ResultSet rs = stmt.executeQuery(SQL);
+
+            List<Inventory> inventoryItems = new ArrayList<Inventory>();
+
+            if(rs.next()){
+                rs.beforeFirst();
+                while(rs.next()){
+
+                    Inventory inventoryItem = new Inventory();
+                    ItemCategory itemCategory = new ItemCategory();
+                    ItemLocation itemLocation = new ItemLocation();
+
+                    inventoryItem.setId(rs.getInt("inventory.id"));
+                    inventoryItem.setItemName(rs.getString("inventory.item_name"));
+                    inventoryItem.setItemQuantity(rs.getInt("inventory.item_quantity"));
+
+                    itemCategory.setId(rs.getInt("item_category.id"));
+                    itemCategory.setCategoryName(rs.getString("item_category.category_name"));
+
+                    itemLocation.setId(rs.getInt("item_location.id"));
+                    itemLocation.setLocationName(rs.getString("item_location.location_name"));
+
+                    inventoryItem.setItemCategory(itemCategory);
+                    inventoryItem.setItemLocation(itemLocation);
+
+                    inventoryItems.add(inventoryItem);
+                }
+
+                Gson gson = new Gson();
+                String json = gson.toJson(inventoryItems);
+                System.out.println(json);
+                return json;
+            }
+
+            else
+            {
+                return "No inventory left";
+            }
+        }
+
+        catch (Exception e) {
+            System.out.println(e);
+        }
+
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                }
+                catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
+        }
+        return "Please check your configurations";
+    }
+
+    public String listByCatLoc(Integer categoryId, Integer locationId)
+    {
+        Connection con = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
+            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+
+            String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = " + categoryId + " AND inventory.item_location_id = " + locationId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
+            System.out.println(SQL);
+            ResultSet rs = stmt.executeQuery(SQL);
+
+            List<Inventory> inventoryItems = new ArrayList<Inventory>();
+
+            if(rs.next()){
+                rs.beforeFirst();
+                while(rs.next()){
+
+                    Inventory inventoryItem = new Inventory();
+                    ItemCategory itemCategory = new ItemCategory();
+                    ItemLocation itemLocation = new ItemLocation();
+
+                    inventoryItem.setId(rs.getInt("inventory.id"));
+                    inventoryItem.setItemName(rs.getString("inventory.item_name"));
+                    inventoryItem.setItemQuantity(rs.getInt("inventory.item_quantity"));
+
+                    itemCategory.setId(rs.getInt("item_category.id"));
+                    itemCategory.setCategoryName(rs.getString("item_category.category_name"));
+
+                    itemLocation.setId(rs.getInt("item_location.id"));
+                    itemLocation.setLocationName(rs.getString("item_location.location_name"));
+
+                    inventoryItem.setItemCategory(itemCategory);
+                    inventoryItem.setItemLocation(itemLocation);
+
+                    inventoryItems.add(inventoryItem);
+                }
+
+                Gson gson = new Gson();
+                String json = gson.toJson(inventoryItems);
+                System.out.println(json);
+                return json;
+            }
+
+            else
+            {
+                return "No inventory left";
+            }
+        }
+
+        catch (Exception e) {
+            System.out.println(e);
+        }
+
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                }
+                catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
+        }
+        return "Please check your configurations";
+    }
+
+
 }
