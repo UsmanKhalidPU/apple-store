@@ -429,6 +429,8 @@ public class AppleStoreService {
 
             String SQL= new String();
             SQL= "select * from inventory where inventory.id='" + id + "'";
+            System.out.println(SQL);
+
             ResultSet rs;
             rs = stmt.executeQuery(SQL);
 
@@ -442,7 +444,7 @@ public class AppleStoreService {
                 return "{\"message\" : \"OK\"}";
             }
             else{
-                System.out.println("invalid key");
+                return ("invalid key");
             }
 
         }
