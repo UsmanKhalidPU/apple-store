@@ -4,20 +4,27 @@ import com.domain.Inventory;
 import com.google.gson.Gson;
 import com.services.AppleStoreService;
 
+import javax.jws.WebService;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @Path("/inventory")
 public class AppleStoreResource {
 
     AppleStoreService appleStoreService = new AppleStoreService();
 
+
     @GET
     @Path("/list")
-    public Response listAll()
+    public Response listAll(@HeaderParam("authorization") String auth)
     {
-        String str = appleStoreService.listAll();
-        return Response.ok(str).build();
+        if(appleStoreService.authUser(auth)) {
+            String str = appleStoreService.listAll();
+            return Response.ok(str).build();
+            }
+        return Response.ok().build();
     }
 
     @GET
@@ -78,5 +85,7 @@ public class AppleStoreResource {
         String Str = appleStoreService.deleteItem(id);
         return Response.ok(Str).build();
     }
+
+
 
 }

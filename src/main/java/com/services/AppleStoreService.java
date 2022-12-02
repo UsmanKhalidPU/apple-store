@@ -5,8 +5,10 @@ import com.domain.ItemCategory;
 import com.domain.ItemLocation;
 import com.google.gson.Gson;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class AppleStoreService {
@@ -82,7 +84,7 @@ public class AppleStoreService {
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
             stmt = con.createStatement();
 
-            String SQL = "select * from inventory, item_category, item_location where inventory.id = " + inventoryId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
+            String SQL = "select * from inventory, item_category, item_location where inventory.id = '" + inventoryId + "' AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
 
@@ -466,4 +468,50 @@ public class AppleStoreService {
         return"Please check your logic";
     }
 
+    public Boolean authUser(String auth)
+    {
+        String authStr = auth;
+        String[] authParts = authStr.split(" ");
+        authStr = authParts[1];
+        byte[] decoded = Base64.getDecoder().decode(authStr);
+        String decodedStr = new String(decoded, StandardCharsets.UTF_8);
+        authParts = decodedStr.split(":");
+
+        Connection con = null;
+        Statement stmt;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
+            stmt = con.createStatement();
+
+            String SQL = "select * from users where users.name = '" + authParts[0] + "' AND users.password = '" + authParts[1] +"';" ;
+            System.out.println(SQL);
+            ResultSet rs = stmt.executeQuery(SQL);
+
+            if(rs.next()){
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+        catch (Exception e) {
+            System.out.println(e);
+        }
+
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                }
+                catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
+        }
+        return false;
+    }
 }
