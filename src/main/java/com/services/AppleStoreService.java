@@ -5,11 +5,13 @@ import com.domain.ItemCategory;
 import com.domain.ItemLocation;
 import com.google.gson.Gson;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.security.MessageDigest;
 
 public class AppleStoreService {
     public String listAll()
@@ -468,8 +470,7 @@ public class AppleStoreService {
         return"Please check your logic";
     }
 
-    public Boolean authUser(String auth)
-    {
+    public Boolean authUser(String auth){
         String authStr = auth;
         String[] authParts = authStr.split(" ");
         authStr = authParts[1];
@@ -481,11 +482,20 @@ public class AppleStoreService {
         Statement stmt;
 
         try {
+            MessageDigest md=MessageDigest.getInstance("MD5");
+            md.update(authParts[1].getBytes(),0,authParts[1].length());
+//            System.out.println("MD5: "+ new BigInteger(1,md.digest()).toString(16));
+//            String result = new String();
+//            result = new BigInteger(1,md.digest()).toString(16);
+//            System.out.println(result);
+
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
             con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
             stmt = con.createStatement();
 
-            String SQL = "select * from users where users.name = '" + authParts[0] + "' AND users.password = '" + authParts[1] +"';" ;
+//            String SQL = "select * from users where users.name = '" + authParts[0] + "' AND users.password = '" + result +"';" ;
+            String SQL = "select * from users where users.name = '" + authParts[0] + "' AND users.password = '" + new BigInteger(1,md.digest()).toString(16) +"';" ;
+
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
 
