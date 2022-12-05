@@ -23,10 +23,6 @@ public class Inventory {
     @SerializedName("item_location")
     private ItemLocation itemLocation;
 
-    public Integer getId() {
-        return id;
-    }
-
     public void setId(Integer id) {
         this.id = id;
     }
@@ -47,25 +43,7 @@ public class Inventory {
         this.itemQuantity = itemQuantity;
     }
 
-    public String getItemCategoryId() {
-        return itemCategoryId;
-    }
-
-    public void setItemCategoryId(String itemCategoryId) {
-        this.itemCategoryId = itemCategoryId;
-    }
-
-    public String getItemLocationId() {
-        return itemLocationId;
-    }
-
-    public void setItemLocationId(String itemLocationId) {
-        this.itemLocationId = itemLocationId;
-    }
-
-    public ItemCategory getItemCategory() {
-        return itemCategory;
-    }
+    public ItemCategory getItemCategory() { return itemCategory; }
 
     public void setItemCategory(ItemCategory itemCategory) {
         this.itemCategory = itemCategory;

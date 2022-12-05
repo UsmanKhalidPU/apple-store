@@ -4,11 +4,8 @@ import com.domain.Inventory;
 import com.google.gson.Gson;
 import com.services.AppleStoreService;
 
-import javax.jws.WebService;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 @Path("/inventory")
 public class AppleStoreResource {

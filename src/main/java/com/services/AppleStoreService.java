@@ -471,6 +471,7 @@ public class AppleStoreService {
     }
 
     public Boolean authUser(String auth){
+        System.out.println(auth);
         String authStr = auth;
         String[] authParts = authStr.split(" ");
         authStr = authParts[1];
