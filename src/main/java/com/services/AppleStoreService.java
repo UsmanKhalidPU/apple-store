@@ -14,8 +14,7 @@ import java.util.List;
 import java.security.MessageDigest;
 
 public class AppleStoreService {
-    public String listAll()
-    {
+    public String listAll() {
         Connection con = null;
         Statement stmt;
 
@@ -76,8 +75,7 @@ public class AppleStoreService {
         return "Please check your configurations";
     }
 
-    public String listById(Integer inventoryId)
-    {
+    public String listById(Integer inventoryId) {
         Connection con = null;
         Statement stmt;
 
@@ -134,8 +132,7 @@ public class AppleStoreService {
         return "Please check your configurations";
     }
 
-    public String listByCategory(Integer categoryId)
-    {
+    public String listByCategory(Integer categoryId) {
         Connection con = null;
 
         try {
@@ -202,8 +199,7 @@ public class AppleStoreService {
         return "Please check your configurations";
     }
 
-    public String listByLocation(Integer locationId)
-    {
+    public String listByLocation(Integer locationId) {
         Connection con = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
@@ -270,8 +266,7 @@ public class AppleStoreService {
         return "Please check your configurations";
     }
 
-    public String listByCatLoc(Integer categoryId, Integer locationId)
-    {
+    public String listByCatLoc(Integer categoryId, Integer locationId) {
         Connection con = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
@@ -337,8 +332,8 @@ public class AppleStoreService {
         }
         return "Please check your configurations";
     }
-    public void addItem(Inventory inventory)
-    {
+
+    public void addItem(Inventory inventory) {
         Connection con = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
@@ -374,8 +369,7 @@ public class AppleStoreService {
         }
     }
 
-    public String updateItem(Inventory inventory, int id)
-    {
+    public String updateItem(Inventory inventory, int id) {
         Connection con = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
@@ -423,8 +417,7 @@ public class AppleStoreService {
         return"Please check your logic";
     }
 
-    public String deleteItem(int id)
-    {
+    public String deleteItem(int id) {
         Connection con = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
@@ -470,7 +463,7 @@ public class AppleStoreService {
         return"Please check your logic";
     }
 
-    public Boolean authUser(String auth){
+    public Boolean authUser(String auth) {
         System.out.println(auth);
         String authStr = auth;
         String[] authParts = authStr.split(" ");

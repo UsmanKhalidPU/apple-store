@@ -5,13 +5,19 @@ import com.domain.ItemCategory;
 import com.domain.ItemLocation;
 import com.resources.AppleStoreResource;
 import junit.framework.TestCase;
+import org.mockito.Mock;
 
 public class AppleStoreServiceTest extends TestCase {
+
     AppleStoreService appleStoreService = new AppleStoreService();
     private Inventory inventory = new Inventory();
+
     private ItemLocation itemLocation = new ItemLocation();
 
     private ItemCategory itemCategory =new ItemCategory();
+
+    @Mock
+    private Inventory mockInventory = new Inventory();
 
     public void setInventoryData(){
         itemLocation.setLocationName("Phoenix");
@@ -61,15 +67,19 @@ public class AppleStoreServiceTest extends TestCase {
     public void testAddItem() {
         setInventoryData();
         appleStoreService.addItem(inventory);
+        appleStoreService.addItem(mockInventory);
     }
 
     public void testUpdateItem() {
         setInventoryData();
-        String data = appleStoreService.updateItem(inventory, 2);
+        appleStoreService.updateItem(inventory, 2);
+        appleStoreService.updateItem(inventory, 33);
+        appleStoreService.updateItem(mockInventory,2);
     }
 
     public void testDeleteItem() {
         appleStoreService.deleteItem(14);
+        appleStoreService.deleteItem(20);
     }
 
     public void testAuthUser() {
