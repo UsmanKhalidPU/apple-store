@@ -1,10 +1,6 @@
 package com.resources;
 
-import com.domain.Inventory;
 import junit.framework.TestCase;
-import org.mockito.Mock;
-
-import javax.ws.rs.HeaderParam;
 
 public class AppleStoreResourceTest extends TestCase {
 

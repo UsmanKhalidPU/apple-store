@@ -4,6 +4,7 @@ import com.domain.Inventory;
 import com.domain.ItemCategory;
 import com.domain.ItemLocation;
 import com.google.gson.Gson;
+import com.zaxxer.hikari.HikariDataSource;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -14,15 +15,23 @@ import java.util.List;
 import java.security.MessageDigest;
 
 public class AppleStoreService {
+    private static Statement stmt;
+    private static Connection con;
+
+    static{
+        try{
+            con = DBUtil.getDataSource().getConnection();
+            stmt = con.createStatement();
+        }
+        catch (Exception e)
+        {
+            System.out.println(e);
+        }
+    }
+
     public String listAll() {
-        Connection con = null;
-        Statement stmt;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
-            stmt = con.createStatement();
-
             String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
@@ -54,36 +63,17 @@ public class AppleStoreService {
             String json = gson.toJson(inventoryItems);
             System.out.println(json);
             return json;
-
         }
 
         catch (Exception e) {
             System.out.println(e);
         }
-
-        finally {
-            if (con != null) {
-                try {
-                    con.close();
-                    System.out.println("Connection Closed");
-                }
-                catch (SQLException e) {
-                    System.out.println(e);
-                }
-            }
-        }
         return "Please check your configurations";
     }
 
     public String listById(Integer inventoryId) {
-        Connection con = null;
-        Statement stmt;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
-            stmt = con.createStatement();
-
             String SQL = "select * from inventory, item_category, item_location where inventory.id = '" + inventoryId + "' AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
@@ -118,28 +108,13 @@ public class AppleStoreService {
             System.out.println(e);
         }
 
-        finally {
-            if (con != null) {
-                try {
-                    con.close();
-                    System.out.println("Connection Closed");
-                }
-                catch (SQLException e) {
-                    System.out.println(e);
-                }
-            }
-        }
         return "Please check your configurations";
     }
 
     public String listByCategory(Integer categoryId) {
-        Connection con = null;
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
-            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = " + categoryId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
@@ -184,28 +159,12 @@ public class AppleStoreService {
         catch (Exception e) {
             System.out.println(e);
         }
-
-        finally {
-            if (con != null) {
-                try {
-                    con.close();
-                    System.out.println("Connection Closed");
-                }
-                catch (SQLException e) {
-                    System.out.println(e);
-                }
-            }
-        }
         return "Please check your configurations";
     }
 
     public String listByLocation(Integer locationId) {
-        Connection con = null;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
-            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_location_id = " + locationId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
@@ -251,28 +210,12 @@ public class AppleStoreService {
         catch (Exception e) {
             System.out.println(e);
         }
-
-        finally {
-            if (con != null) {
-                try {
-                    con.close();
-                    System.out.println("Connection Closed");
-                }
-                catch (SQLException e) {
-                    System.out.println(e);
-                }
-            }
-        }
         return "Please check your configurations";
     }
 
     public String listByCatLoc(Integer categoryId, Integer locationId) {
-        Connection con = null;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
-            Statement stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-
+            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = " + categoryId + " AND inventory.item_location_id = " + locationId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
@@ -318,18 +261,6 @@ public class AppleStoreService {
         catch (Exception e) {
             System.out.println(e);
         }
-
-        finally {
-            if (con != null) {
-                try {
-                    con.close();
-                    System.out.println("Connection Closed");
-                }
-                catch (SQLException e) {
-                    System.out.println(e);
-                }
-            }
-        }
         return "Please check your configurations";
     }
 
@@ -370,14 +301,8 @@ public class AppleStoreService {
     }
 
     public String updateItem(Inventory inventory, int id) {
-        Connection con = null;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
-            Statement stmt = con.createStatement();
-
-            String SQL= new String();
-            SQL= "select * from inventory where inventory.id='" + id + "'";
+            String SQL= "select * from inventory where inventory.id='" + id + "'";
             ResultSet rs;
             rs = stmt.executeQuery(SQL);
 
@@ -403,29 +328,12 @@ public class AppleStoreService {
             System.out.println(e);
         }
 
-        finally {
-            if (con != null) {
-                try {
-                    con.close();
-                    System.out.println("Connection Closed");
-                }
-                catch (SQLException e) {
-                    System.out.println(e);
-                }
-            }
-        }
         return"Please check your logic";
     }
 
     public String deleteItem(int id) {
-        Connection con = null;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
-            Statement stmt = con.createStatement();
-
-            String SQL= new String();
-            SQL= "select * from inventory where inventory.id='" + id + "'";
+            String SQL = "select * from inventory where inventory.id='" + id + "'";
             System.out.println(SQL);
 
             ResultSet rs;
@@ -443,22 +351,9 @@ public class AppleStoreService {
             else{
                 return ("invalid key");
             }
-
         }
         catch (Exception e) {
             System.out.println(e);
-        }
-
-        finally {
-            if (con != null) {
-                try {
-                    con.close();
-                    System.out.println("Connection Closed");
-                }
-                catch (SQLException e) {
-                    System.out.println(e);
-                }
-            }
         }
         return"Please check your logic";
     }
@@ -472,9 +367,6 @@ public class AppleStoreService {
         String decodedStr = new String(decoded, StandardCharsets.UTF_8);
         authParts = decodedStr.split(":");
 
-        Connection con = null;
-        Statement stmt;
-
         try {
             MessageDigest md=MessageDigest.getInstance("MD5");
             md.update(authParts[1].getBytes(),0,authParts[1].length());
@@ -482,11 +374,6 @@ public class AppleStoreService {
 //            String result = new String();
 //            result = new BigInteger(1,md.digest()).toString(16);
 //            System.out.println(result);
-
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
-            stmt = con.createStatement();
-
 //            String SQL = "select * from users where users.name = '" + authParts[0] + "' AND users.password = '" + result +"';" ;
             String SQL = "select * from users where users.name = '" + authParts[0] + "' AND users.password = '" + new BigInteger(1,md.digest()).toString(16) +"';" ;
 
@@ -505,17 +392,6 @@ public class AppleStoreService {
             System.out.println(e);
         }
 
-        finally {
-            if (con != null) {
-                try {
-                    con.close();
-                    System.out.println("Connection Closed");
-                }
-                catch (SQLException e) {
-                    System.out.println(e);
-                }
-            }
-        }
         return false;
     }
 }

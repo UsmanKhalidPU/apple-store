@@ -3,7 +3,6 @@ package com.services;
 import com.domain.Inventory;
 import com.domain.ItemCategory;
 import com.domain.ItemLocation;
-import com.resources.AppleStoreResource;
 import junit.framework.TestCase;
 import org.mockito.Mock;
 
