@@ -15,13 +15,15 @@ import java.util.List;
 import java.security.MessageDigest;
 
 public class AppleStoreService {
-    private static Statement stmt;
     private static Connection con;
+    private static Statement stmt;
+    private static Statement stmtScroll;
 
     static{
         try{
             con = DBUtil.getDataSource().getConnection();
             stmt = con.createStatement();
+            stmtScroll = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);;
         }
         catch (Exception e)
         {
@@ -64,9 +66,18 @@ public class AppleStoreService {
             System.out.println(json);
             return json;
         }
-
         catch (Exception e) {
             System.out.println(e);
+        }
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
         }
         return "Please check your configurations";
     }
@@ -96,28 +107,38 @@ public class AppleStoreService {
                 itemLocation.setLocationName(rs.getString("item_location.location_name"));
                 inventoryItem.setItemLocation(itemLocation);
             }
-
             Gson gson = new Gson();
             String json = gson.toJson(inventoryItem);
             System.out.println(json);
             return json;
-
         }
-
         catch (Exception e) {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
             System.out.println(e);
         }
-
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
+        }
         return "Please check your configurations";
     }
 
     public String listByCategory(Integer categoryId) {
 
         try {
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = " + categoryId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
-            ResultSet rs = stmt.executeQuery(SQL);
+            ResultSet rs = stmtScroll.executeQuery(SQL);
 
             List<Inventory> inventoryItems = new ArrayList<Inventory>();
             if(rs.next()) {
@@ -148,26 +169,32 @@ public class AppleStoreService {
                 System.out.println(json);
                 return json;
             }
-
             else
             {
                 return "No inventory left";
             }
-
         }
-
         catch (Exception e) {
             System.out.println(e);
+        }
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
         }
         return "Please check your configurations";
     }
 
     public String listByLocation(Integer locationId) {
         try {
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_location_id = " + locationId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
-            ResultSet rs = stmt.executeQuery(SQL);
+            ResultSet rs = stmtScroll.executeQuery(SQL);
 
             List<Inventory> inventoryItems = new ArrayList<Inventory>();
 
@@ -194,32 +221,37 @@ public class AppleStoreService {
 
                     inventoryItems.add(inventoryItem);
                 }
-
                 Gson gson = new Gson();
                 String json = gson.toJson(inventoryItems);
                 System.out.println(json);
                 return json;
             }
-
             else
             {
                 return "No inventory left";
             }
         }
-
         catch (Exception e) {
             System.out.println(e);
+        }
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
         }
         return "Please check your configurations";
     }
 
     public String listByCatLoc(Integer categoryId, Integer locationId) {
         try {
-            stmt = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = " + categoryId + " AND inventory.item_location_id = " + locationId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
-            ResultSet rs = stmt.executeQuery(SQL);
-
+            ResultSet rs = stmtScroll.executeQuery(SQL);
             List<Inventory> inventoryItems = new ArrayList<Inventory>();
 
             if(rs.next()){
@@ -245,35 +277,37 @@ public class AppleStoreService {
 
                     inventoryItems.add(inventoryItem);
                 }
-
                 Gson gson = new Gson();
                 String json = gson.toJson(inventoryItems);
                 System.out.println(json);
                 return json;
             }
-
             else
             {
                 return "No inventory left";
             }
         }
-
         catch (Exception e) {
             System.out.println(e);
+        }
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
         }
         return "Please check your configurations";
     }
 
     public void addItem(Inventory inventory) {
-        Connection con = null;
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/applestore", "root", "root");
-
             String SQL = "insert into inventory (item_name, item_quantity, item_category_id, item_location_id) values (?,?,?,?); ";
 
             PreparedStatement pstmt = con.prepareStatement(SQL);
-
             pstmt.setString(1,inventory.getItemName());
             pstmt.setInt(2,inventory.getItemQuantity());
             pstmt.setInt(3,inventory.getItemCategory().getId());
@@ -281,19 +315,16 @@ public class AppleStoreService {
 
             int record = pstmt.executeUpdate();
             System.out.println("No. of record Inserted: "+ record);
-
-            }
+        }
         catch (Exception e) {
             System.out.println(e);
         }
-
         finally {
             if (con != null) {
                 try {
                     con.close();
                     System.out.println("Connection Closed");
-                }
-                catch (SQLException e) {
+                } catch (SQLException e) {
                     System.out.println(e);
                 }
             }
@@ -327,7 +358,16 @@ public class AppleStoreService {
         catch (Exception e) {
             System.out.println(e);
         }
-
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
+        }
         return"Please check your logic";
     }
 
@@ -335,7 +375,6 @@ public class AppleStoreService {
         try {
             String SQL = "select * from inventory where inventory.id='" + id + "'";
             System.out.println(SQL);
-
             ResultSet rs;
             rs = stmt.executeQuery(SQL);
 
@@ -354,6 +393,16 @@ public class AppleStoreService {
         }
         catch (Exception e) {
             System.out.println(e);
+        }
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
         }
         return"Please check your logic";
     }
@@ -387,11 +436,19 @@ public class AppleStoreService {
                 return false;
             }
         }
-
         catch (Exception e) {
             System.out.println(e);
         }
-
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Closed");
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
+        }
         return false;
     }
 }

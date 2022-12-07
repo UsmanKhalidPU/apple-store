@@ -14,7 +14,9 @@ public class DBUtil {
             dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/applestore");
             dataSource.setUsername("root");
             dataSource.setPassword("root");
+            System.out.println("Connection created");
         }
+
         catch (Exception e)
         {
             System.out.println(e);
