@@ -15,25 +15,13 @@ import java.util.List;
 import java.security.MessageDigest;
 
 public class AppleStoreService {
-    private static Connection con;
-    private static Statement stmt;
-    private static Statement stmtScroll;
-
-    static{
-        try{
-            con = DBUtil.getDataSource().getConnection();
-            stmt = con.createStatement();
-            stmtScroll = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);;
-        }
-        catch (Exception e)
-        {
-            System.out.println(e);
-        }
-    }
 
     public String listAll() {
-
+        Connection con = null;
+        Statement stmt;
         try {
+            con = DBUtil.getDataSource().getConnection();
+            stmt = con.createStatement();
             String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
@@ -83,8 +71,11 @@ public class AppleStoreService {
     }
 
     public String listById(Integer inventoryId) {
-
+        Connection con = null;
+        Statement stmt;
         try {
+            con = DBUtil.getDataSource().getConnection();
+            stmt = con.createStatement();
             String SQL = "select * from inventory, item_category, item_location where inventory.id = '" + inventoryId + "' AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
@@ -134,8 +125,11 @@ public class AppleStoreService {
     }
 
     public String listByCategory(Integer categoryId) {
-
+        Connection con = null;
+        Statement stmtScroll;
         try {
+            con = DBUtil.getDataSource().getConnection();
+            stmtScroll = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = " + categoryId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmtScroll.executeQuery(SQL);
@@ -191,7 +185,11 @@ public class AppleStoreService {
     }
 
     public String listByLocation(Integer locationId) {
+        Connection con = null;
+        Statement stmtScroll;
         try {
+            con = DBUtil.getDataSource().getConnection();
+            stmtScroll = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_location_id = " + locationId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmtScroll.executeQuery(SQL);
@@ -248,7 +246,11 @@ public class AppleStoreService {
     }
 
     public String listByCatLoc(Integer categoryId, Integer locationId) {
+        Connection con = null;
+        Statement stmtScroll;
         try {
+            con = DBUtil.getDataSource().getConnection();
+            stmtScroll = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = " + categoryId + " AND inventory.item_location_id = " + locationId + " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
             System.out.println(SQL);
             ResultSet rs = stmtScroll.executeQuery(SQL);
@@ -304,7 +306,9 @@ public class AppleStoreService {
     }
 
     public void addItem(Inventory inventory) {
+        Connection con = null;
         try {
+            con = DBUtil.getDataSource().getConnection();
             String SQL = "insert into inventory (item_name, item_quantity, item_category_id, item_location_id) values (?,?,?,?); ";
 
             PreparedStatement pstmt = con.prepareStatement(SQL);
@@ -332,7 +336,11 @@ public class AppleStoreService {
     }
 
     public String updateItem(Inventory inventory, int id) {
+        Connection con = null;
+        Statement stmt;
         try {
+            con = DBUtil.getDataSource().getConnection();
+            stmt = con.createStatement();
             String SQL= "select * from inventory where inventory.id='" + id + "'";
             ResultSet rs;
             rs = stmt.executeQuery(SQL);
@@ -372,7 +380,11 @@ public class AppleStoreService {
     }
 
     public String deleteItem(int id) {
+        Connection con = null;
+        Statement stmt;
         try {
+            con = DBUtil.getDataSource().getConnection();
+            stmt = con.createStatement();
             String SQL = "select * from inventory where inventory.id='" + id + "'";
             System.out.println(SQL);
             ResultSet rs;
@@ -416,7 +428,12 @@ public class AppleStoreService {
         String decodedStr = new String(decoded, StandardCharsets.UTF_8);
         authParts = decodedStr.split(":");
 
+        Connection con = null;
+        Statement stmt;
+
         try {
+            con = DBUtil.getDataSource().getConnection();
+            stmt = con.createStatement();
             MessageDigest md=MessageDigest.getInstance("MD5");
             md.update(authParts[1].getBytes(),0,authParts[1].length());
 //            System.out.println("MD5: "+ new BigInteger(1,md.digest()).toString(16));
