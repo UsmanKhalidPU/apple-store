@@ -6,10 +6,10 @@ import javax.sql.DataSource;
 
 public class DBUtil {
     private static HikariDataSource dataSource;
+    static int i = 0;
 
-    public static HikariDataSource getDataSourcePool(){
-        if (dataSource==null)
-        {
+    public static HikariDataSource getDataSourcePool() {
+        if (dataSource == null) {
             getDataSource();
         }
         return dataSource;
@@ -25,8 +25,10 @@ public class DBUtil {
             dataSource.setMaximumPoolSize(5);
             System.out.println("Connection created");
         } catch (Exception e) {
-            System.out.println(e);
-            getDataSourcePool();
+            while (i<2){
+                i++;
+                getDataSourcePool();
+            }
         }
         return dataSource;
     }
