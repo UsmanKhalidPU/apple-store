@@ -8,6 +8,7 @@ import com.services.AppleStoreService;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.Provider;
 
 @Path("/inventory")
 public class AppleStoreResource {
@@ -27,7 +28,18 @@ public class AppleStoreResource {
 //        }
 //        else {return Response.ok().build();}
     }
-    
+
+    @GET
+    @Path("/requestFilter/list")
+    public Response crListAll(ContainerRequestContext auth)  {
+        String headerStr = auth.getHeaders().getFirst("Authorization");
+        if(headerStr.equals("Basic YWRtaW46cm9vdA==")) {
+            String str = appleStoreService.listAll();
+            return Response.ok(str).build();
+        }
+        {return Response.ok().build();}
+    }
+
     @GET
     @Path("/list")
     public Response listAll(@HeaderParam("authorization") String auth) {
