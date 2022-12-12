@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import javax.sql.DataSource;
 
-public class DBUtil {
+public class DBUtilService {
     private static HikariDataSource dataSource;
 
     public static HikariDataSource getDataSourcePool(){
