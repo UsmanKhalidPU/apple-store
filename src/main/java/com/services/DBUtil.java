@@ -18,12 +18,10 @@ public class DBUtil {
     public static DataSource getDataSource() {
         try {
             dataSource = new HikariDataSource();
-            dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
-            dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/applestore");
-            dataSource.setUsername("root");
-            dataSource.setPassword("root");
-            dataSource.setMaximumPoolSize(5);
-            System.out.println("Connection created");
+            dataSource.setDriverClassName(System.getenv("DriverClassName"));
+            dataSource.setJdbcUrl(System.getenv("JdbcUrl"));
+            dataSource.setUsername(System.getenv("Username"));
+            dataSource.setPassword(System.getenv("Password"));
         } catch (Exception e) {
             while (i<2){
                 i++;
