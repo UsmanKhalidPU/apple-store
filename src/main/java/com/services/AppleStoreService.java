@@ -39,7 +39,7 @@ public class AppleStoreService {
             if (con != null) {
                 try {
                     con.close();
-                    System.out.println("Connection Closed");
+                    System.out.println("Connection Returned");
                 } catch (SQLException e) {
                     System.out.println(e);
                 }
@@ -75,7 +75,7 @@ public class AppleStoreService {
             if (con != null) {
                 try {
                     con.close();
-                    System.out.println("Connection Closed");
+                    System.out.println("Connection Returned");
                 } catch (SQLException e) {
                     System.out.println(e);
                 }
@@ -111,7 +111,7 @@ public class AppleStoreService {
             if (con != null) {
                 try {
                     con.close();
-                    System.out.println("Connection Closed");
+                    System.out.println("Connection Returned");
                 } catch (SQLException e) {
                     System.out.println(e);
                 }
@@ -147,7 +147,7 @@ public class AppleStoreService {
             if (con != null) {
                 try {
                     con.close();
-                    System.out.println("Connection Closed");
+                    System.out.println("Connection Returned");
                 } catch (SQLException e) {
                     System.out.println(e);
                 }
@@ -184,7 +184,7 @@ public class AppleStoreService {
             if (con != null) {
                 try {
                     con.close();
-                    System.out.println("Connection Closed");
+                    System.out.println("Connection Returned");
                 } catch (SQLException e) {
                     System.out.println(e);
                 }
@@ -211,7 +211,7 @@ public class AppleStoreService {
             if (con != null) {
                 try {
                     con.close();
-                    System.out.println("Connection Closed");
+                    System.out.println("Connection Returned");
                 } catch (SQLException e) {
                     System.out.println(e);
                 }
@@ -246,7 +246,7 @@ public class AppleStoreService {
             if (con != null) {
                 try {
                     con.close();
-                    System.out.println("Connection Closed");
+                    System.out.println("Connection Returned");
                 } catch (SQLException e) {
                     System.out.println(e);
                 }
@@ -280,7 +280,7 @@ public class AppleStoreService {
             if (con != null) {
                 try {
                     con.close();
-                    System.out.println("Connection Closed");
+                    System.out.println("Connection Returned");
                 } catch (SQLException e) {
                     System.out.println(e);
                 }
@@ -323,7 +323,7 @@ public class AppleStoreService {
             if (con != null) {
                 try {
                     con.close();
-                    System.out.println("Connection Closed");
+                    System.out.println("Connection Returned");
                 } catch (SQLException e) {
                     System.out.println(e);
                 }
