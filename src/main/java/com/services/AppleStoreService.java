@@ -4,7 +4,6 @@ import com.domain.Inventory;
 import com.domain.ItemCategory;
 import com.domain.ItemLocation;
 import com.google.gson.Gson;
-import com.zaxxer.hikari.HikariDataSource;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +20,7 @@ public class AppleStoreService {
         Statement stmt;
 
         try {
-            con = DBUtil.getDataSource().getConnection();
+            con = DBUtilService.getDataSource().getConnection();
             stmt = con.createStatement();
             String SQL = "select * from inventory, item_category, item_location where " +
                     "inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
@@ -53,7 +52,7 @@ public class AppleStoreService {
         Statement stmt;
 
         try {
-            con = DBUtil.getDataSource().getConnection();
+            con = DBUtilService.getDataSource().getConnection();
             stmt = con.createStatement();
             String SQL = "select * from inventory, item_category, item_location where inventory.id = '" + inventoryId +
                     "' AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
@@ -89,7 +88,7 @@ public class AppleStoreService {
         Statement stmtScroll;
 
         try {
-            con = DBUtil.getDataSource().getConnection();
+            con = DBUtilService.getDataSource().getConnection();
             stmtScroll = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = " + categoryId +
                     " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
@@ -125,7 +124,7 @@ public class AppleStoreService {
         Statement stmtScroll;
 
         try {
-            con = DBUtil.getDataSource().getConnection();
+            con = DBUtilService.getDataSource().getConnection();
             stmtScroll = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_location_id = " + locationId +
                     " AND inventory.item_category_id = item_category.id AND inventory.item_location_id = item_location.id;";
@@ -161,7 +160,7 @@ public class AppleStoreService {
         Statement stmtScroll;
 
         try {
-            con = DBUtil.getDataSource().getConnection();
+            con = DBUtilService.getDataSource().getConnection();
             stmtScroll = con.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
             String SQL = "select * from inventory, item_category, item_location where inventory.item_category_id = " + categoryId +
                     " AND inventory.item_location_id = " + locationId + " AND inventory.item_category_id = item_category.id AND " +
@@ -197,7 +196,7 @@ public class AppleStoreService {
         Connection con = null;
 
         try {
-            con = DBUtil.getDataSource().getConnection();
+            con = DBUtilService.getDataSource().getConnection();
             String SQL = "insert into inventory (item_name, item_quantity, item_category_id, item_location_id) values (?,?,?,?); ";
             PreparedStatement pstmt = con.prepareStatement(SQL);
             pstmt.setString(1, inventory.getItemName());
@@ -224,7 +223,7 @@ public class AppleStoreService {
         Statement stmt;
 
         try {
-            con = DBUtil.getDataSource().getConnection();
+            con = DBUtilService.getDataSource().getConnection();
             stmt = con.createStatement();
             String SQL = "select * from inventory where inventory.id='" + id + "'";
             ResultSet rs;
@@ -259,7 +258,7 @@ public class AppleStoreService {
         Connection con = null;
         Statement stmt;
         try {
-            con = DBUtil.getDataSource().getConnection();
+            con = DBUtilService.getDataSource().getConnection();
             stmt = con.createStatement();
             String SQL = "select * from inventory where inventory.id='" + id + "'";
             ResultSet rs;
@@ -300,7 +299,7 @@ public class AppleStoreService {
         Connection con = null;
         Statement stmt;
         try {
-            con = DBUtil.getDataSource().getConnection();
+            con = DBUtilService.getDataSource().getConnection();
             stmt = con.createStatement();
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(authParts[1].getBytes(), 0, authParts[1].length());
