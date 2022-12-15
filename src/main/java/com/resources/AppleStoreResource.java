@@ -1,32 +1,29 @@
 package com.resources;
 
 import com.domain.Inventory;
-import com.domain.MyAuth;
 import com.google.gson.Gson;
 import com.services.AppleStoreService;
 
+import javax.annotation.security.PermitAll;
+import javax.interceptor.Interceptor;
+import javax.interceptor.InterceptorBinding;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
+import java.lang.annotation.*;
 
 @Path("/inventory")
 public class AppleStoreResource {
 
     AppleStoreService appleStoreService = new AppleStoreService();
-    //public @interface Authorization{}
 
+    @MyAuth
     @GET
     @Path("myAuth/list")
-    @MyAuth
     public Response myAuthListAll() {
-        return Response.ok("Authenticated").build();
-//        System.out.println(auth);
-//        if(appleStoreService.authUser(auth)) {
-//            String str = appleStoreService.listAll();
-//            return Response.ok(str).build();
-//        }
-//        else {return Response.ok().build();}
+        return Response.ok(appleStoreService.listAll()).build();
     }
 
     @GET
