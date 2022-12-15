@@ -1,10 +1,8 @@
 package com.resources;
 
-import javax.ws.rs.NameBinding;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-//@Retention(RetentionPolicy.RUNTIME)
-@NameBinding
+@Retention(RetentionPolicy.RUNTIME)
 public @interface MyAuth {
 }

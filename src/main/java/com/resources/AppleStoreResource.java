@@ -5,8 +5,6 @@ import com.google.gson.Gson;
 import com.services.AppleStoreService;
 
 import javax.annotation.security.PermitAll;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InterceptorBinding;
 import javax.ws.rs.*;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Context;
