@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Base64;
 
@@ -35,18 +36,28 @@ public class MyAuthService implements ContainerRequestFilter {
             md.update(authParts[1].getBytes(),0,authParts[1].length());
             String SQL = "select * from users where users.name = '" + authParts[0] + "' AND users.password = '" + new BigInteger(1,md.digest()).toString(16) +"';" ;
 
-            System.out.println(SQL);
+//            System.out.println(SQL);
             ResultSet rs = stmt.executeQuery(SQL);
 
             if(!rs.next()){
                 ctx.abortWith(Response
                         .status(Response.Status.ACCEPTED)
-                        .entity("User not authenticated")
+                        .entity("User not authenticated>>")
                         .build());
             }
         }
         catch (Exception e) {
             System.out.println(e);
+        }
+        finally {
+            if (con != null) {
+                try {
+                    con.close();
+                    System.out.println("Connection Returned");
+                } catch (SQLException e) {
+                    System.out.println(e);
+                }
+            }
         }
     }
 }

@@ -27,10 +27,8 @@ public class AppleStoreResource {
     @GET
     @Path("/requestFilter/list")
     public Response crListAll(ContainerRequestContext auth)  {
-        String headerStr = auth.getHeaders().getFirst("Authorization");
-        if(headerStr.equals("Basic YWRtaW46cm9vdA==")) {
-            String str = appleStoreService.listAll();
-            return Response.ok(str).build();
+        if(auth.getHeaders().getFirst("Authorization").equals("Basic YWRtaW46cm9vdA==")) {
+            return Response.ok(appleStoreService.listAll()).build();
         }
         {return Response.ok().build();}
     }
@@ -38,86 +36,82 @@ public class AppleStoreResource {
     @GET
     @Path("/list")
     public Response listAll(@HeaderParam("authorization") String auth) {
-        if(appleStoreService.authUser(auth)) {
-            String str = appleStoreService.listAll();
-            return Response.ok(str).build();
-            }
-        else {return Response.ok().build();}
+        if (appleStoreService.authUser(auth)) {
+            return Response.ok(appleStoreService.listAll()).build();
+        } else {
+            return Response.ok().build();
+        }
     }
 
     @GET
     @Path("/{inventory_id}")
-    public Response listById(@PathParam("inventory_id")Integer id, @HeaderParam("authorization") String auth) {
-        if(appleStoreService.authUser(auth)) {
-            String str = appleStoreService.listById(id);
-            return Response.ok(str).build();
+    public Response listById(@PathParam("inventory_id") Integer id, @HeaderParam("authorization") String auth) {
+        if (appleStoreService.authUser(auth)) {
+            return Response.ok(appleStoreService.listById(id)).build();
+        } else {
+            return Response.ok().build();
         }
-        else {return Response.ok().build();}
     }
 
     @GET
     @Path("/listByCategory")
     public Response listByCategory(@QueryParam("category") Integer categoryId, @HeaderParam("authorization") String auth) {
-        if(appleStoreService.authUser(auth)) {
-            String str = appleStoreService.listByCategory(categoryId);
-            return Response.ok(str).build();
+        if (appleStoreService.authUser(auth)) {
+            return Response.ok(appleStoreService.listByCategory(categoryId)).build();
+        } else {
+            return Response.ok().build();
         }
-        else {return Response.ok().build();}
     }
 
     @GET
     @Path("/listByLocation")
     public Response listByLocation(@QueryParam("location") Integer locationId, @HeaderParam("authorization") String auth) {
-        if(appleStoreService.authUser(auth)) {
-            String str = appleStoreService.listByLocation(locationId);
-            return Response.ok(str).build();
+        if (appleStoreService.authUser(auth)) {
+            return Response.ok(appleStoreService.listByLocation(locationId)).build();
+        } else {
+            return Response.ok().build();
         }
-        else {return Response.ok().build();}
     }
 
     @GET
     @Path("/listByCatLoc")
-    public Response listByCatLoc(@QueryParam ("category") Integer categoryId, @QueryParam("location") Integer locationId, @HeaderParam("authorization") String auth) {
-        if(appleStoreService.authUser(auth)) {
-            String str = appleStoreService.listByCatLoc(categoryId, locationId);
-            return Response.ok(str).build();
+    public Response listByCatLoc(@QueryParam("category") Integer categoryId, @QueryParam("location") Integer locationId, @HeaderParam("authorization") String auth) {
+        if (appleStoreService.authUser(auth)) {
+            return Response.ok(appleStoreService.listByCatLoc(categoryId, locationId)).build();
+        } else {
+            return Response.ok().build();
         }
-        else {return Response.ok().build();}
     }
 
     @POST
     @Path("/add")
     public Response addItem(String str, @HeaderParam("authorization") String auth) {
-        if(appleStoreService.authUser(auth)) {
-            Gson gson = new Gson();
-            Inventory inventory = gson.fromJson(str, Inventory.class);
-            appleStoreService.addItem(inventory);
+        if (appleStoreService.authUser(auth)) {
+            appleStoreService.addItem(new Gson().fromJson(str, Inventory.class));
             return Response.ok(str).build();
+        } else {
+            return Response.ok().build();
         }
-        else {return Response.ok().build();}
     }
 
     @PUT
     @Path("/{inventory_id}")
-    public Response updateItem(@PathParam("inventory_id")Integer id, String str, @HeaderParam("authorization") String auth) {
-        if(appleStoreService.authUser(auth)) {
-            Gson gson = new Gson();
-            Inventory inventory = gson.fromJson(str, Inventory.class);
-            String updatedStr = appleStoreService.updateItem(inventory, id);
+    public Response updateItem(@PathParam("inventory_id") Integer id, String str, @HeaderParam("authorization") String auth) {
+        if (appleStoreService.authUser(auth)) {
+            String updatedStr = appleStoreService.updateItem(new Gson().fromJson(str, Inventory.class), id);
             return Response.ok(updatedStr).build();
+        } else {
+            return Response.ok().build();
         }
-        else {return Response.ok().build();}
     }
 
     @DELETE
     @Path("/{inventory_id}")
-    public Response deleteItem(@PathParam("inventory_id")Integer id, @HeaderParam("authorization") String auth) {
-        if(appleStoreService.authUser(auth)) {
-            String Str = appleStoreService.deleteItem(id);
-            return Response.ok(Str).build();
+    public Response deleteItem(@PathParam("inventory_id") Integer id, @HeaderParam("authorization") String auth) {
+        if (appleStoreService.authUser(auth)) {
+            return Response.ok(appleStoreService.deleteItem(id)).build();
+        } else {
+            return Response.ok().build();
         }
-        else {return Response.ok().build();}
     }
-
 }
-//context request container
